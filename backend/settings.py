@@ -11,23 +11,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from datetime import timedelta
+import environ
+import sys, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
+env = environ.Env()
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ry68yleu70v1f47(zyb&p$9%ap#tva7halmg_ftx+0w!%)6plv'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['192.168.43.51', '127.0.0.1', 'localhost']
-
+DEBUG = env('DEBUG')
+ALLOWED_HOSTS = eval(env('ALLOWED_HOSTS'))
+SECRET_KEY = env('SECRET_KEY')
 
 # Application definition
 
@@ -124,11 +120,11 @@ DATABASES = {
 }
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'onlineShop',
-#         'HOST': 'localhost',
+#         'ENGINE': env('DB_ENGINE'),
+#         'NAME': env('DB_NAME'),
+#         'HOST': env('DB_HOST'),
 #         'USER': ' ',
-#         'PASSWORD': ' ',
+#         'PASSWORD': env('DB_PSWD'),
 #         'OPTIONS': {
 #             'charset': 'utf8mb4',
 #         },
@@ -153,6 +149,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -188,8 +189,13 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SSL_KEY_FILE = BASE_DIR / 'frontend/private.key'
-SSL_CERTIFICATE_FILE = BASE_DIR / 'frontend/certificate.crt'
-CORS_ORIGIN_ALLOW_ALL = True
-SECRET_HASH = 'akdfnakjd7yafkjncfkjaf00acf2909cadkfdkjfcak'
+#----------Production Parameters------------------------------------------
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# APPEND_SLASH = True
+
+# SECURE_HSTS_SECONDS = 315360000
+# SECURE_HSTS_PRELOAD = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
